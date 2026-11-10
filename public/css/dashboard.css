@@ -1,3 +1,7 @@
+[hidden] {
+  display: none !important;
+}
+
 :root {
   --navy-900: #0b1026;
   --navy-800: #111838;
