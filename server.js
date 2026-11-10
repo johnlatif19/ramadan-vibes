@@ -51,11 +51,6 @@ function requiredEnv(name) {
   return value;
 }
 
-function normalizePrivateKey(raw) {
-  if (!raw) return "";
-  return String(raw).replace(/\\n/g, "\n");
-}
-
 if (!JWT_SECRET || JWT_SECRET.length < 32) {
   throw new Error("JWT_SECRET must be set and at least 32 characters long.");
 }
@@ -63,18 +58,21 @@ if (!ADMIN_USERNAME || !ADMIN_PASSWORD_HASH) {
   throw new Error("ADMIN_USERNAME and ADMIN_PASSWORD_HASH must be set.");
 }
 
-const firebaseProjectId = requiredEnv("FIREBASE_PROJECT_ID");
-const firebaseClientEmail = requiredEnv("FIREBASE_CLIENT_EMAIL");
-const firebasePrivateKey = normalizePrivateKey(requiredEnv("FIREBASE_PRIVATE_KEY"));
+let firebaseServiceAccount;
+try {
+  firebaseServiceAccount = JSON.parse(requiredEnv("FIREBASE_SERVICE_ACCOUNT_KEY"));
+} catch (err) {
+  throw new Error("FIREBASE_SERVICE_ACCOUNT_KEY is not valid JSON.");
+}
+
+if (firebaseServiceAccount && typeof firebaseServiceAccount.private_key === "string") {
+  firebaseServiceAccount.private_key = firebaseServiceAccount.private_key.replace(/\\n/g, "\n");
+}
 
 let firebaseApp;
 if (!getApps().length) {
   firebaseApp = initializeApp({
-    credential: cert({
-      projectId: firebaseProjectId,
-      clientEmail: firebaseClientEmail,
-      privateKey: firebasePrivateKey
-    })
+    credential: cert(firebaseServiceAccount)
   });
 } else {
   firebaseApp = getApps()[0];
