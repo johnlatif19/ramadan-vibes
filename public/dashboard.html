@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>لوحة التحكم - Ramadan Vibes</title>
+  <link rel="icon" type="image/webp" href="/assets/images/logo.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Amiri:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+
+  <div class="bg-decor" aria-hidden="true">
+    <span class="bg-glow bg-glow-1"></span>
+    <span class="bg-glow bg-glow-2"></span>
+  </div>
+
+  <div class="auth-guard" id="auth-guard">
+    <span class="guard-spinner" aria-hidden="true"></span>
+    <p>جاري التحقق من الجلسة...</p>
+  </div>
+
+  <div class="dashboard-shell" id="dashboard-shell" hidden>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <img src="/assets/images/logo.webp" alt="Ramadan Vibes" width="44" height="44">
+        <div class="sidebar-brand-text">
+          <span class="sidebar-brand-name">Ramadan Vibes</span>
+          <span class="sidebar-brand-sub">لوحة التحكم</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button type="button" class="nav-item is-active" data-view="sections-view">
+          <span class="nav-icon" aria-hidden="true"></span>
+          <span>إدارة الأقسام</span>
+        </button>
+        <button type="button" class="nav-item" data-view="add-post-view">
+          <span class="nav-icon nav-icon-add" aria-hidden="true"></span>
+          <span>إضافة منشور</span>
+        </button>
+        <button type="button" class="nav-item" data-view="posts-view">
+          <span class="nav-icon nav-icon-list" aria-hidden="true"></span>
+          <span>إدارة المنشورات</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="/" class="sidebar-home-link">زيارة الموقع</a>
+        <button type="button" class="logout-btn" id="logout-btn">
+          <span class="logout-icon" aria-hidden="true"></span>
+          <span>تسجيل الخروج</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-area">
+
+      <header class="topbar">
+        <button type="button" class="menu-toggle" id="menu-toggle" aria-label="فتح القائمة">
+          <span></span><span></span><span></span>
+        </button>
+        <h1 class="topbar-title" id="topbar-title">إدارة الأقسام</h1>
+        <div class="topbar-user">
+          <span class="user-dot" aria-hidden="true"></span>
+          <span>مرحباً أيها الأدمن</span>
+        </div>
+      </header>
+
+      <section class="view" id="sections-view">
+
+        <div class="view-head">
+          <h2 class="view-title">أسماء الأقسام</h2>
+          <p class="view-desc">قم بتعديل أسماء الأقسام الثلاثة، وستظهر التغييرات مباشرة على الصفحة الرئيسية.</p>
+        </div>
+
+        <div class="sections-editor" id="sections-editor">
+          <div class="loading-inline"><span class="spinner-sm"></span><span>جاري تحميل الأقسام...</span></div>
+        </div>
+
+        <div class="form-message" id="sections-message" role="alert" hidden></div>
+
+      </section>
+
+      <section class="view" id="add-post-view" hidden>
+
+        <div class="view-head">
+          <h2 class="view-title">إضافة منشور جديد</h2>
+          <p class="view-desc">اختر القسم، اكتب الرسالة، وأضف صورة (اختياري).</p>
+        </div>
+
+        <form class="post-form" id="add-post-form" novalidate>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="add-section" class="form-label">القسم <span class="required">*</span></label>
+              <select id="add-section" name="sectionId" class="form-input" required>
+                <option value="">جاري تحميل الأقسام...</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="add-message" class="form-label">الرسالة <span class="required">*</span></label>
+              <textarea
+                id="add-message"
+                name="message"
+                class="form-input form-textarea"
+                rows="5"
+                placeholder="اكتب رسالة المنشور..."
+                required
+                minlength="1"
+                maxlength="1000"
+              ></textarea>
+              <div class="char-counter"><span id="add-message-count">0</span> / 1000</div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">الصورة (اختياري)</label>
+
+              <div class="image-source-tabs">
+                <button type="button" class="tab-btn is-active" data-source="file">رفع من الجهاز</button>
+                <button type="button" class="tab-btn" data-source="url">رابط خارجي</button>
+              </div>
+
+              <div class="image-source-panel" id="add-source-file">
+                <label for="add-image-file" class="file-drop" id="add-file-drop">
+                  <input type="file" id="add-image-file" accept="image/jpeg,image/png,image/webp" hidden>
+                  <span class="file-drop-icon" aria-hidden="true"></span>
+                  <span class="file-drop-text">اسحب الصورة هنا أو اضغط للاختيار</span>
+                  <span class="file-drop-hint">JPEG أو PNG أو WEBP، حتى 5 ميجا</span>
+                </label>
+                <div class="image-preview-wrap" id="add-file-preview-wrap" hidden>
+                  <img src="" alt="معاينة" class="image-preview" id="add-file-preview">
+                  <button type="button" class="preview-clear" id="add-file-clear">إزالة</button>
+                </div>
+              </div>
+
+              <div class="image-source-panel" id="add-source-url" hidden>
+                <input
+                  type="url"
+                  id="add-image-url"
+                  class="form-input"
+                  placeholder="https://example.com/image.jpg"
+                  maxlength="2048"
+                >
+                <div class="image-preview-wrap" id="add-url-preview-wrap" hidden>
+                  <img src="" alt="معاينة" class="image-preview" id="add-url-preview">
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary" id="add-submit-btn">
+              <span class="btn-text">إضافة المنشور</span>
+              <span class="btn-spinner" aria-hidden="true"></span>
+            </button>
+            <button type="reset" class="btn-ghost" id="add-reset-btn">إعادة تعيين</button>
+          </div>
+
+          <div class="form-message" id="add-message" role="alert" hidden></div>
+
+        </form>
+
+      </section>
+
+      <section class="view" id="posts-view" hidden>
+
+        <div class="view-head">
+          <h2 class="view-title">إدارة المنشورات</h2>
+          <p class="view-desc">عرض، تعديل، وحذف جميع المنشورات.</p>
+        </div>
+
+        <div class="filters-bar">
+          <div class="filter-group">
+            <label for="filter-section" class="filter-label">القسم</label>
+            <select id="filter-section" class="form-input filter-input">
+              <option value="">كل الأقسام</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="filter-search" class="filter-label">بحث</label>
+            <input
+              type="search"
+              id="filter-search"
+              class="form-input filter-input"
+              placeholder="ابحث في الرسائل..."
+              maxlength="100"
+            >
+          </div>
+          <button type="button" class="btn-ghost filter-refresh" id="refresh-posts-btn">تحديث</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="posts-table" id="posts-table">
+            <thead>
+              <tr>
+                <th>الصورة</th>
+                <th>القسم</th>
+                <th>الرسالة</th>
+                <th>تاريخ الإضافة</th>
+                <th>إجراءات</th>
+              </tr>
+            </thead>
+            <tbody id="posts-tbody">
+              <tr><td colspan="5"><div class="loading-inline"><span class="spinner-sm"></span><span>جاري تحميل المنشورات...</span></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="form-message" id="posts-message" role="alert" hidden></div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="edit-modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
+      <div class="modal-head">
+        <h3 id="edit-modal-title" class="modal-title">تعديل المنشور</h3>
+        <button type="button" class="modal-close" id="edit-modal-close" aria-label="إغلاق">&times;</button>
+      </div>
+      <form class="modal-body" id="edit-form" novalidate>
+
+        <input type="hidden" id="edit-post-id">
+
+        <div class="form-group">
+          <label for="edit-section" class="form-label">القسم <span class="required">*</span></label>
+          <select id="edit-section" class="form-input" required></select>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-message" class="form-label">الرسالة <span class="required">*</span></label>
+          <textarea id="edit-message" class="form-input form-textarea" rows="5" maxlength="1000" required></textarea>
+          <div class="char-counter"><span id="edit-message-count">0</span> / 1000</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">الصورة الحالية</label>
+          <div class="current-image-wrap" id="edit-current-image-wrap" hidden>
+            <img src="" alt="الصورة الحالية" class="image-preview" id="edit-current-image">
+            <button type="button" class="btn-danger-sm" id="edit-remove-current-image">حذف الصورة الحالية</button>
+          </div>
+          <p class="no-image-text" id="edit-no-image-text">لا توجد صورة حالية.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">استبدال الصورة (اختياري)</label>
+          <div class="image-source-tabs">
+            <button type="button" class="tab-btn is-active" data-edit-source="file">رفع من الجهاز</button>
+            <button type="button" class="tab-btn" data-edit-source="url">رابط خارجي</button>
+          </div>
+
+          <div class="image-source-panel" id="edit-source-file">
+            <label for="edit-image-file" class="file-drop" id="edit-file-drop">
+              <input type="file" id="edit-image-file" accept="image/jpeg,image/png,image/webp" hidden>
+              <span class="file-drop-icon" aria-hidden="true"></span>
+              <span class="file-drop-text">اسحب الصورة هنا أو اضغط للاختيار</span>
+              <span class="file-drop-hint">JPEG أو PNG أو WEBP، حتى 5 ميجا</span>
+            </label>
+            <div class="image-preview-wrap" id="edit-file-preview-wrap" hidden>
+              <img src="" alt="معاينة" class="image-preview" id="edit-file-preview">
+              <button type="button" class="preview-clear" id="edit-file-clear">إزالة</button>
+            </div>
+          </div>
+
+          <div class="image-source-panel" id="edit-source-url" hidden>
+            <input type="url" id="edit-image-url" class="form-input" placeholder="https://example.com/image.jpg" maxlength="2048">
+            <div class="image-preview-wrap" id="edit-url-preview-wrap" hidden>
+              <img src="" alt="معاينة" class="image-preview" id="edit-url-preview">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-message" id="edit-message-alert" role="alert" hidden></div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn-primary" id="edit-submit-btn">
+            <span class="btn-text">حفظ التعديلات</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="btn-ghost" id="edit-cancel-btn">إلغاء</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="delete-modal" hidden>
+    <div class="modal modal-sm" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+      <div class="modal-head">
+        <h3 id="delete-modal-title" class="modal-title">تأكيد الحذف</h3>
+        <button type="button" class="modal-close" id="delete-modal-close" aria-label="إغلاق">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="delete-text">هل أنت متأكد من حذف هذا المنشور نهائياً؟ لا يمكن التراجع عن هذا الإجراء.</p>
+        <input type="hidden" id="delete-post-id">
+        <div class="modal-actions">
+          <button type="button" class="btn-danger" id="delete-confirm-btn">
+            <span class="btn-text">تأكيد الحذف</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="btn-ghost" id="delete-cancel-btn">إلغاء</button>
+        </div>
+        <div class="form-message" id="delete-message" role="alert" hidden></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="/js/dashboard.js" defer></script>
+</body>
+</html>
