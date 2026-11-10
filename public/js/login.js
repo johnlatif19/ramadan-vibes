@@ -10,12 +10,12 @@
 
   const API_LOGIN = "/api/auth/login";
   const API_ME = "/api/auth/me";
-  const DASHBOARD_URL = "/dashboard.html";
+  const DASHBOARD_URL = "/dashboard";
 
   const ERROR_MESSAGES = {
     REQUIRED: "يرجى ملء جميع الحقول المطلوبة.",
     USERNAME_INVALID: "اسم المستخدم يجب أن يكون بين 3 و64 حرفاً.",
-    PASSWORD_INVALID: "كلمة المرور يجب أن تكون بين 6 و128 حرفاً.",
+    PASSWORD_INVALID: "كلمة المرور يجب أن تكون بين 5 و128 حرفاً.",
     INVALID_CREDENTIALS: "اسم المستخدم أو كلمة المرور غير صحيحة.",
     RATE_LIMITED: "محاولات كثيرة، يرجى الانتظار قليلاً ثم المحاولة مرة أخرى.",
     NETWORK: "تعذر الاتصال بالسيرفر، تحقق من اتصالك وحاول مجدداً.",
@@ -56,7 +56,7 @@
   }
 
   function validatePassword(value) {
-    return typeof value === "string" && value.length >= 6 && value.length <= 128;
+    return typeof value === "string" && value.length >= 5 && value.length <= 128;
   }
 
   function validateForm() {
