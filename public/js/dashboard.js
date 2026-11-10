@@ -213,19 +213,19 @@
         credentials: "include"
       });
       if (!response.ok) {
-        window.location.replace("/login.html");
+        window.location.replace("/login");
         return;
       }
       const data = await response.json();
       if (!data || data.success !== true) {
-        window.location.replace("/login.html");
+        window.location.replace("/login");
         return;
       }
       authGuard.hidden = true;
       dashboardShell.hidden = false;
       initDashboard();
     } catch (err) {
-      window.location.replace("/login.html");
+      window.location.replace("/login");
     }
   }
 
@@ -277,7 +277,7 @@
       } catch (err) {
         /* تجاهل */
       }
-      window.location.replace("/login.html");
+      window.location.replace("/login");
     });
   }
 
