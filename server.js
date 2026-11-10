@@ -16,6 +16,13 @@ const { initializeApp, cert, getApps } = require("firebase-admin/app");
 const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 const cloudinary = require("cloudinary").v2;
 
+process.on("uncaughtException", function (err) {
+  console.error("UNCAUGHT EXCEPTION:", err);
+});
+process.on("unhandledRejection", function (err) {
+  console.error("UNHANDLED REJECTION:", err);
+});
+
 const PORT = parseInt(process.env.PORT, 10) || 3000;
 const NODE_ENV = process.env.NODE_ENV || "development";
 const IS_PRODUCTION = NODE_ENV === "production";
@@ -342,6 +349,7 @@ app.post("/api/auth/login", async function (req, res) {
       data: { username: username, role: "admin" }
     });
   } catch (err) {
+    console.error("LOGIN ERROR:", err);
     return res.status(500).json({ success: false, message: "حدث خطأ في السيرفر، يرجى المحاولة لاحقاً." });
   }
 });
@@ -368,6 +376,7 @@ app.get("/api/sections", async function (req, res) {
     });
     return res.json({ success: true, data: sections });
   } catch (err) {
+    console.error("GET SECTIONS ERROR:", err);
     return res.status(500).json({ success: false, message: "تعذر جلب الأقسام." });
   }
 });
@@ -434,6 +443,7 @@ app.get("/api/posts", async function (req, res) {
     });
     return res.json({ success: true, data: posts });
   } catch (err) {
+    console.error("GET POSTS ERROR:", err);
     return res.status(500).json({ success: false, message: "تعذر جلب المنشورات." });
   }
 });
@@ -575,7 +585,6 @@ app.delete("/api/posts/:id", requireAuth, async function (req, res) {
         try {
           await cloudinary.uploader.destroy(publicId, { invalidate: true });
         } catch (err) {
-          /* تجاهل أخطاء حذف الصورة من Cloudinary */
         }
       }
     }
@@ -658,62 +667,6 @@ app.post("/api/upload", requireAuth, function (req, res) {
 
 app.use("/api", function (req, res) {
   return res.status(404).json({ success: false, message: "المسار غير موجود." });
-});
-
-const publicDir = path.join(__dirname, "public");
-
-app.use(
-  express.static(publicDir, {
-    index: false,
-    extensions: ["html"],
-    maxAge: IS_PRODUCTION ? "7d" : 0,
-    setHeaders: function (res, filePath) {
-      if (filePath.endsWith(".html")) {
-        res.setHeader("Cache-Control", "no-cache");
-      }
-    }
-  })
-);
-
-app.get("/", function (req, res) {
-  res.sendFile(path.join(publicDir, "index.html"));
-});
-
-app.get("/index.html", function (req, res) {
-  res.sendFile(path.join(publicDir, "index.html"));
-});
-
-app.get("/login", function (req, res) {
-  res.sendFile(path.join(publicDir, "login.html"));
-});
-
-app.get("/login.html", function (req, res) {
-  res.sendFile(path.join(publicDir, "login.html"));
-});
-
-app.get("/dashboard", function (req, res) {
-  res.sendFile(path.join(publicDir, "dashboard.html"));
-});
-
-app.get("/dashboard.html", function (req, res) {
-  res.sendFile(path.join(publicDir, "dashboard.html"));
-});
-
-app.use(function (req, res) {
-  res.status(404).sendFile(path.join(publicDir, "index.html"));
-});
-
-app.use(function (err, req, res, next) {
-  if (res.headersSent) {
-    return next(err);
-  }
-  if (err && err.message === "CORS_NOT_ALLOWED") {
-    return res.status(403).json({ success: false, message: "الوصول غير مسموح من هذا المصدر." });
-  }
-  if (req.path && req.path.indexOf("/api") === 0) {
-    return res.status(500).json({ success: false, message: "حدث خطأ غير متوقع." });
-  }
-  return res.status(500).sendFile(path.join(publicDir, "index.html"));
 });
 
 if (require.main === module) {
