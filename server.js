@@ -327,7 +327,7 @@ app.post("/api/auth/login", async function (req, res) {
       return res.status(400).json({ success: false, message: "اسم المستخدم غير صالح." });
     }
 
-    if (!validator.isLength(password, { min: 6, max: 128 })) {
+    if (!validator.isLength(password, { min: 5, max: 128 })) {
       return res.status(400).json({ success: false, message: "كلمة المرور غير صالحة." });
     }
 
