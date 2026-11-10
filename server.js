@@ -2,6 +2,7 @@
 
 require("dotenv").config();
 
+const path = require("path");
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
@@ -661,6 +662,49 @@ app.use("/api", function (req, res) {
   return res.status(404).json({ success: false, message: "المسار غير موجود." });
 });
 
+const publicDir = path.join(__dirname, "public");
+
+app.use(
+  express.static(publicDir, {
+    index: false,
+    extensions: ["html"],
+    maxAge: IS_PRODUCTION ? "7d" : 0,
+    setHeaders: function (res, filePath) {
+      if (filePath.endsWith(".html")) {
+        res.setHeader("Cache-Control", "no-cache");
+      }
+    }
+  })
+);
+
+app.get("/", function (req, res) {
+  res.sendFile(path.join(publicDir, "index.html"));
+});
+
+app.get("/index.html", function (req, res) {
+  res.sendFile(path.join(publicDir, "index.html"));
+});
+
+app.get("/login", function (req, res) {
+  res.sendFile(path.join(publicDir, "login.html"));
+});
+
+app.get("/login.html", function (req, res) {
+  res.sendFile(path.join(publicDir, "login.html"));
+});
+
+app.get("/dashboard", function (req, res) {
+  res.sendFile(path.join(publicDir, "dashboard.html"));
+});
+
+app.get("/dashboard.html", function (req, res) {
+  res.sendFile(path.join(publicDir, "dashboard.html"));
+});
+
+app.use(function (req, res) {
+  res.status(404).sendFile(path.join(publicDir, "index.html"));
+});
+
 app.use(function (err, req, res, next) {
   if (res.headersSent) {
     return next(err);
@@ -668,7 +712,10 @@ app.use(function (err, req, res, next) {
   if (err && err.message === "CORS_NOT_ALLOWED") {
     return res.status(403).json({ success: false, message: "الوصول غير مسموح من هذا المصدر." });
   }
-  return res.status(500).json({ success: false, message: "حدث خطأ غير متوقع." });
+  if (req.path && req.path.indexOf("/api") === 0) {
+    return res.status(500).json({ success: false, message: "حدث خطأ غير متوقع." });
+  }
+  return res.status(500).sendFile(path.join(publicDir, "index.html"));
 });
 
 if (require.main === module) {
