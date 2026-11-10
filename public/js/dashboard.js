@@ -96,16 +96,6 @@
     isDeleting: false
   };
 
-  function escapeHtml(value) {
-    if (value === null || value === undefined) return "";
-    return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
-  }
-
   function showToast(text, type) {
     const toast = document.createElement("div");
     toast.className = "toast " + (type === "error" ? "is-error" : "is-success");
@@ -184,7 +174,7 @@
     const response = await fetch(url, config);
 
     if (response.status === 401) {
-      window.location.replace("/login.html");
+      window.location.replace("/login");
       throw new Error("UNAUTHORIZED");
     }
 
@@ -275,7 +265,6 @@
           headers: { Accept: "application/json" }
         });
       } catch (err) {
-        /* تجاهل */
       }
       window.location.replace("/login");
     });
