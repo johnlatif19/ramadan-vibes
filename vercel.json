@@ -15,19 +15,23 @@
     },
     {
       "source": "/css/(.*)",
-      "destination": "/public/css/$1"
+      "destination": "/css/$1"
     },
     {
       "source": "/js/(.*)",
-      "destination": "/public/js/$1"
+      "destination": "/js/$1"
     },
     {
       "source": "/assets/(.*)",
-      "destination": "/public/assets/$1"
+      "destination": "/assets/$1"
     },
     {
       "source": "/",
-      "destination": "/public/index.html"
+      "destination": "/index.html"
+    },
+    {
+      "source": "/index.html",
+      "destination": "/index.html"
     }
   ],
   "functions": {
